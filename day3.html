@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 3 | Hidden Messages 💌</title>
+
+  <style>
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+     background:linear-gradient(135deg, #f0db1b 10%, #42ffe0 30%, #fe2273 70%, #08d3ea 100%);
+      background-size: 200% 200%;
+      animation: gradientMove 8s ease infinite;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+    }
+
+    .game {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      backdrop-filter: blur(5px);
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      outline: none;
+      width: 180px;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 15px;
+      background: #fff;
+      color: #ff6a00;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255,255,255,0.6);
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #ff0080;
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    .grid {
+      display: none;
+      grid-template-columns: repeat(3, 120px);
+      grid-gap: 15px;
+      margin-top: 20px;
+    }
+
+    .box {
+      background: rgba(255,255,255,0.2);
+      border-radius: 12px;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+      backdrop-filter: blur(5px);
+      color: #fff;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .box:hover {
+      background: rgba(255,255,255,0.3);
+      transform: scale(1.05);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 15px;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    @keyframes gradientMove {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .fade-in {
+      animation: fadeIn 1s forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* NEXT BUTTON */
+
+    #nextBtn {
+      position: absolute;
+      bottom: 60px;
+      right: 30px;
+      background: #fff;
+      color: #ff6a00;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 15px rgba(255,255,255,0.6);
+      transition: 0.3s;
+    }
+
+    #nextBtn:hover {
+      background: #ff0080;
+      color: #fff;
+      transform: scale(1.1);
+    }
+
+    /* LOCK MESSAGE */
+
+    .lock-message {
+      position: absolute;
+      bottom: 120px;
+      right: 30px;
+      background: rgba(255,255,255,0.2);
+      padding: 12px 18px;
+      border-radius: 12px;
+      backdrop-filter: blur(5px);
+      display: none;
+      animation: fadeIn 0.5s ease;
+      max-width: 260px;
+      font-size: 0.95rem;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <h1>Day 3: Hidden Messages for Mistri Jii 💌</h1>
+
+  <h4>Click to Open</h4>
+
+  <div class="game" id="gameBox">
+
+    <p id="hint">
+      I am your ___ forever 👦🏻
+    </p>
+
+    <input
+      type="text"
+      id="answer"
+      placeholder="Type your answer..."
+      autocomplete="off"
+    >
+
+    <br>
+
+    <button onclick="checkAnswer()">
+      Submit
+    </button>
+
+    <p id="feedback"></p>
+
+  </div>
+
+  <div class="grid" id="messageGrid">
+
+    <div class="box" onclick="reveal(this, 0)">💚</div>
+    <div class="box" onclick="reveal(this, 1)">💫</div>
+    <div class="box" onclick="reveal(this, 2)">💝</div>
+    <div class="box" onclick="reveal(this, 3)">💛</div>
+    <div class="box" onclick="reveal(this, 4)">🌟</div>
+    <div class="box" onclick="reveal(this, 5)">⚡</div>
+    <div class="box" onclick="reveal(this, 6)">😎</div>
+    <div class="box" onclick="reveal(this, 7)">🧡</div>
+    <div class="box" onclick="reveal(this, 8)">🌍</div>
+    <div class="box" onclick="reveal(this, 9)">💗</div>
+    <div class="box" onclick="reveal(this, 10)">🥹</div>
+    <div class="box" onclick="reveal(this, 11)">💖</div>
+
+  </div>
+
+  <!-- NEXT BUTTON -->
+
+  <button id="nextBtn" onclick="nextDay()">
+    Go to Day 4 ➜
+  </button>
+
+  <!-- LOCK MESSAGE -->
+
+  <div class="lock-message" id="lockMessage"></div>
+
+  <footer>
+    Created with ❤️ by Shahid 🧸
+  </footer>
+
+  <script>
+
+    const hints = [
+
+      {
+        hint: "I am your ___ forever 👦🏻",
+        answer: "brother"
+      },
+
+      {
+        hint: "You are my ___ forever 🧡",
+        answer: "brother"
+      },
+
+      {
+        hint: "The taunt you passed on me first time ___ 😏",
+        answer: "ladki ki awaaz"
+      },
+
+      {
+        hint: "You are my life ___ 💗",
+        answer: "helper"
+      },
+
+      {
+        hint: "Our name mix ___ 💝",
+        answer: "shazar"
+      }
+
+    ];
+
+    let current = 0;
+
+    let score = 0;
+
+    function checkAnswer() {
+
+      const userAnswer =
+        document.getElementById("answer")
+        .value
+        .trim()
+        .toLowerCase();
+
+      const feedback =
+        document.getElementById("feedback");
+
+      if (userAnswer === hints[current].answer) {
+
+        score++;
+
+        feedback.textContent = "Correct! 😸";
+
+        feedback.style.color = "#0f0";
+
+        setTimeout(() => {
+
+          current++;
+
+          if (current < hints.length) {
+
+            document.getElementById("hint")
+              .textContent = hints[current].hint;
+
+            document.getElementById("answer").value = "";
+
+            feedback.textContent = "";
+
+          } else {
+
+            startMessages();
+
+          }
+
+        }, 1000);
+
+      } else {
+
+        feedback.textContent = "Oops! Try again 🥺";
+
+        feedback.style.color = "#ff4444";
+      }
+    }
+
+    function startMessages() {
+
+      document.getElementById("gameBox")
+        .style.display = "none";
+
+      const grid =
+        document.getElementById("messageGrid");
+
+      grid.style.display = "grid";
+
+      grid.classList.add("fade-in");
+    }
+
+    const messages = [
+
+      "I am your Brother forever 💚",
+
+      "You make even silence feel special 💫",
+
+      "Your friendship is my favorite gift 💝",
+
+      "Khizar, you have the kindest heart 💛",
+
+      "Khizar you came in my life to give true value of everything 🌟",
+
+      "You’re pure energy wrapped in goodness ⚡",
+
+      "You’re a walking good-vibes generator 😎",
+
+      "No one can replace you, Khizar 🧡",
+
+      "You deserve all the happiness in the world 🌍",
+
+      "With you, every moment is memorable 💗",
+
+      "You are irreplaceable 🥹",
+
+      "Our friendship is like a Touch Me Not plant 💖"
+
+    ];
+
+    function reveal(box, index) {
+
+      box.innerText = messages[index];
+
+      box.style.background = "rgba(255,255,255,0.4)";
+
+      box.style.color = "#000";
+
+      box.style.fontSize = "14px";
+    }
+
+    /* =========================
+       DATE LOCK FOR DAY 4
+    ========================= */
+
+    function nextDay() {
+
+      // Unlock Date = 27 May 2026
+      const unlockDate =
+        new Date("2026-05-27T00:00:00");
+
+      const now = new Date();
+
+      const lockMessage =
+        document.getElementById("lockMessage");
+
+      if (now >= unlockDate) {
+
+        // Open Day 5
+        window.location.href = "day5.html";
+
+      } else {
+
+        // Remaining Time
+        const diff = unlockDate - now;
+
+        const days =
+          Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        const hours =
+          Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+        const minutes =
+          Math.floor((diff / (1000 * 60)) % 60);
+
+        lockMessage.style.display = "block";
+
+        lockMessage.innerHTML = `
+          🔒 Day 4 is locked 💛 Come Later 😁 <br><br>
+          Unlocks in <b>${days}d ${hours}h ${minutes}m</b>
+        `;
+      }
+    }
+
+  </script>
+
+</body>
+</html>
