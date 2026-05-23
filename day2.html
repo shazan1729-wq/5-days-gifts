@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Day 2 | Reasons Why You’re Special 💛</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background:linear-gradient(135deg, #f0db1b 10%, #42ffe0 30%, #fe2273 70%, #08d3ea 100%);
+  background-size: 200% 200%;
+  animation: gradientMove 8s ease infinite;
+  color: white;
+  text-align: center;
+  overflow-x: hidden;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+h1 {
+  text-shadow: 0 0 15px rgba(255,255,255,0.8);
+}
+
+.puzzle {
+  margin: 20px;
+  background: rgba(255,255,255,0.2);
+  padding: 20px;
+  border-radius: 15px;
+  max-width: 320px;
+  display: none;
+  backdrop-filter: blur(6px);
+}
+
+.fade {
+  opacity: 0;
+  animation: fadeIn 0.7s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+button {
+  background: #fff;
+  color: #ff8000;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.1);
+}
+
+.message {
+  display: none;
+  margin-top: 15px;
+  font-size: 1.1rem;
+  animation: fadeIn 0.7s ease;
+}
+
+.confetti {
+  position: fixed;
+  width: 10px;
+  height: 10px;
+  background: gold;
+  top: 0;
+  animation: fall 3s linear infinite;
+}
+
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0); }
+  100% { transform: translateY(100vh) rotate(360deg); }
+}
+
+.lock-message {
+  margin-top: 15px;
+  font-size: 1rem;
+  color: #fff;
+  background: rgba(0,0,0,0.25);
+  padding: 10px 15px;
+  border-radius: 12px;
+  display: none;
+  animation: fadeIn 0.5s ease;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Day 2: Reasons Why You’re Special 🧡</h1>
+<h3>💫 Emoji Match Game 💫</h3>
+<p>Match the right emoji to reveal each reason why you’re special 🧡</p>
+
+<div id="game"></div>
+
+<h2 id="final" style="display:none;">🎉 You unlocked all messages! 🎉</h2>
+
+<footer>Created with 🧡 by Shahid 🧸</footer>
+
+<button onclick="nextDay()">Go to Day 3 ➜</button>
+
+<div class="lock-message" id="lockMessage"></div>
+
+<script>
+
+const puzzles = [
+  {q:"Which emoji means honesty?", options:["😎","💝","🤥"], answer:"💝", msg:" You’re honest — no pretending, no fake vibes."},
+  {q:"Which emoji shows appreciation?", options:["💗","💣","😈"], answer:"💗", msg:" You always make me feel seen and valued."},
+  {q:"Pick the one for memorable moments!", options:["🧡","💔","🧊"], answer:"🧡", msg:" You can turn an ordinary day into something memorable."},
+  {q:"Which emoji fits ‘you care deeply’?", options:["✨","💀","💛"], answer:"💛", msg:" You care deeply — even when you pretend you don’t."},
+  {q:"Peaceful aura emoji?", options:["💤","☮","🌸"], answer:"☮", msg:" You have this peaceful aura that makes me calm."},
+  {q:"Which emoji means comfort zone?", options:["🫶","🥶","🔥"], answer:"🫶", msg:" You’re not just a friend… you’re a comfort zone."},
+  {q:"Which emoji reminds of values?", options:["🎯","🍕","🌸"], answer:"🌸", msg:" You remind me that I have some values."},
+  {q:"Which emoji fits laughter?", options:["😴","😂","😢"], answer:"😂", msg:" You always know how to make me laugh!"},
+  {q:"Which emoji suits a lighter life?", options:["😉","😡","😐"], answer:"😉", msg:" You make life feel lighter — just by being in it."},
+  {q:"Which emoji means irreplaceable?", options:["📦","🍩","💎"], answer:"💎", msg:" You’re irreplaceable — there’s no one else like you."},
+  {q:"Which emoji means support?", options:["🏆","🤝","🎉"], answer:"🤝", msg:" You’re my support system — always there to support me."},
+  {q:"Which emoji means inspiration?", options:["🌟","💤","🛑"], answer:"🌟", msg:" You inspire me to be a better person."},
+  {q:"Which emoji means warmth?", options:["🔥","❄️","💨"], answer:"🔥", msg:" You bring warmth and light into my life."},
+  {q:"Which emoji means uniqueness?", options:["🐑","🦄","🐏"], answer:"🦄", msg:" You’re one of a kind — truly unique."},
+  {q:"Which emoji means kindness?", options:["💢","💖","💥"], answer:"💖", msg:" Your kindness is contagious."},
+  {q:"Pick the emoji for trust?", options:["🔒","💣","⚠️"], answer:"🔒", msg:" I trust you completely — no doubts."},
+  {q:"Pick the emoji for gratefulness?", options:["💼","🙏","🎲"], answer:"🙏", msg:" I’m grateful for you every single day."}
+];
+
+const gameDiv = document.getElementById("game");
+let current = 0;
+
+function showPuzzle(i) {
+
+  const p = puzzles[i];
+
+  if (!p) return finishGame();
+
+  const div = document.createElement("div");
+
+  div.className = "puzzle fade";
+
+  div.innerHTML = `
+    <h3>${p.q}</h3>
+
+    ${p.options.map(o =>
+      `<button onclick="checkAnswer('${o}')">${o}</button>`
+    ).join('')}
+
+    <div class="message" id="msg${i}"></div>
+
+    <button id="nextBtn${i}" style="display:none;" onclick="nextPuzzle()">
+      Next ➡
+    </button>
+  `;
+
+  gameDiv.innerHTML = "";
+
+  gameDiv.appendChild(div);
+
+  div.style.display = "block";
+}
+
+function checkAnswer(opt) {
+
+  const p = puzzles[current];
+
+  if (opt === p.answer) {
+
+    const msgDiv = document.getElementById("msg" + current);
+
+    msgDiv.innerText = p.msg;
+
+    msgDiv.style.display = "block";
+
+    const nextBtn = document.getElementById("nextBtn" + current);
+
+    nextBtn.style.display = "inline-block";
+
+    const buttons = msgDiv.parentElement.querySelectorAll("button");
+
+    buttons.forEach(btn => {
+      if(btn.id !== "nextBtn" + current) {
+        btn.disabled = true;
+      }
+    });
+
+  } else {
+
+    alert("❌ Try again!");
+
+  }
+}
+
+function nextPuzzle() {
+  current++;
+  showPuzzle(current);
+}
+
+function finishGame() {
+
+  gameDiv.innerHTML = "";
+
+  document.getElementById("final").style.display = "block";
+
+  for (let i = 0; i < 80; i++) {
+
+    const c = document.createElement("div");
+
+    c.className = "confetti";
+
+    c.style.left = Math.random() * 100 + "vw";
+
+    c.style.background =
+      ["#ff0080","#8e2de2","#ffcc00","#00f2ff"]
+      [Math.floor(Math.random() * 4)];
+
+    c.style.animationDuration =
+      (2 + Math.random() * 3) + "s";
+
+    document.body.appendChild(c);
+  }
+}
+
+/* =========================
+   DAY 3 DATE LOCK
+========================= */
+
+function nextDay() {
+
+  // CHANGE THIS DATE
+  const unlockDate = new Date("2026-05-25T00:00:00");
+
+  const now = new Date();
+
+  const lockMessage = document.getElementById("lockMessage");
+
+  if (now >= unlockDate) {
+
+    window.location.href = "day3.html";
+
+  } else {
+
+    const diff = unlockDate - now;
+
+    const days =
+      Math.floor(diff / (1000 * 60 * 60 * 24));
+
+    const hours =
+      Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+    const minutes =
+      Math.floor((diff / (1000 * 60)) % 60);
+
+    lockMessage.style.display = "block";
+
+    lockMessage.innerHTML = `
+      🔒 Day 3 is locked for now ! Come Later 💛 <br><br>
+      Unlocks in <b>${days}d ${hours}h ${minutes}m</b>
+    `;
+  }
+}
+
+// Start first puzzle
+showPuzzle(current);
+
+</script>
+
+</body>
+</html>
